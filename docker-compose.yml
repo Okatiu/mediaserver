@@ -7,19 +7,18 @@ services:
             - NET_ADMIN                         
         environment: 
             - KILL_SWITCH=true                  
-            - FORWARDED_PORTS=12345             
+            - FORWARDED_PORTS=57154             
         devices:
             - /dev/net/tun                      
         volumes:
             - /volume1/docker/mullvadVPN/config/mullvad_config_linux_it_mil:/data/vpn   
         ports:
-            - 8090:8090                         # qbittorrent
+            - 8080:8080                         # qbittorrent
             - 7878:7878                         # radarr
             - 9117:9117                         # jackett
             - 8989:8989                         # sonarr
             - 6881:6881                         #?
             - 6881:6881/udp                     #?
-            - 8080:8080                         #?
         restart: unless-stopped
  
     qbittorrent:
@@ -30,11 +29,11 @@ services:
             - PGID=101
             - TZ=Europe/Rome
             - UMASK_SET=022
-            - WEBUI_PORT=8090
+            - WEBUI_PORT=8080
         volumes:
             - /volume1/docker/qbittorrent/config:/config
-            - /volume1/video/downloads/movies:/filmdownloads
-            - /volume1/video/downloads/tvshows:/tvdownloads 
+            - /volume1/video/downloads/complete:/completedownloads
+            - /volume1/video/downloads/incomplete:/incompletedownloads
         network_mode: service:expressvpn
         restart: unless-stopped
 
@@ -48,7 +47,6 @@ services:
             - AUTO_UPDATE=true
         volumes:
             - /volume1/docker/jackett/config:/config
-            - /volume1/video/Downloads:/downloads
         restart: unless-stopped
         network_mode: service:expressvpn
         depends_on:
@@ -64,7 +62,7 @@ services:
         volumes:
             - /volume1/docker/sonarr/config:/config
             - /volume1/video/Shows/Inglese:/tv
-            - /volume1/video/downloads/movies:/downloads
+            - /volume1/video/downloads/complete:/downloads
         ports:
             - 8989:8989
         restart: unless-stopped
@@ -81,9 +79,9 @@ services:
             - PGID=101
             - TZ=Europe/Rome
         volumes:
-            - /volume1/docker/radarr3/config:/config
+            - /volume1/docker/radarr/config:/config
             - /volume1/video/Movies/Inglese:/movies
-            - /volume1/video/downloads/movies:/downloads
+            - /volume1/video/downloads/complete:/downloads
         ports:
             - 7878:7878
         restart: unless-stopped
