@@ -1,8 +1,8 @@
 version: "2"
 services:
-    openvpn-client:
+    mullvadVPN:
         image: yacht7/openvpn-client            
-        container_name: openvpn-client
+        container_name: mullvadVPN
         cap_add:
             - NET_ADMIN                         
         environment: 
@@ -34,7 +34,7 @@ services:
             - /volume1/docker/qbittorrent/config:/config
             - /volume1/video/downloads/complete:/completedownloads
             - /volume1/video/downloads/incomplete:/incompletedownloads
-        network_mode: service:expressvpn
+        network_mode: service:mullvadVPN
         restart: unless-stopped
 
     jackett:
@@ -48,7 +48,7 @@ services:
         volumes:
             - /volume1/docker/jackett/config:/config
         restart: unless-stopped
-        network_mode: service:expressvpn
+        network_mode: service:mullvadVPN
         depends_on:
             - qbittorrent
 
@@ -66,7 +66,7 @@ services:
         ports:
             - 8989:8989
         restart: unless-stopped
-        network_mode: service:expressvpn
+        network_mode: service:mullvadVPN
         depends_on:
             - jackett
             - qbittorrent
@@ -85,7 +85,7 @@ services:
         ports:
             - 7878:7878
         restart: unless-stopped
-        network_mode: service:expressvpn
+        network_mode: service:mullvadVPN
         depends_on:
             - jackett
             - qbittorrent
